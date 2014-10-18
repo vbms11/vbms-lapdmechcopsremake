@@ -5,6 +5,7 @@ Created on Oct 16, 2014
 '''
 from Building import Building
 from Road import Road
+from math import floor
 
 class Level():
     '''
@@ -49,4 +50,14 @@ class Level():
     def update (self):
         
         return
+    
+    def isRoad (self, x, y):
+        
+        x = int(x)
+        y = int(y)
+        
+        if x < 0 or x >= self.levelSize[0] or y < 0 or y >= self.levelSize[1]:
+            return False
+        
+        return isinstance(self.level[y][x], Road)
     

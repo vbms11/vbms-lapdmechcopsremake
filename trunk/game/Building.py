@@ -37,45 +37,45 @@ class Building ():
         
         glTranslate(*self.position);
         
-        glBegin(GL_QUADS)                # Start Drawing The Cube
-    
-        # Front Face (note that the texture's corners have to match the quad's corners)
-        glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 1.0)    # Bottom Left Of The Texture and Quad
-        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 1.0)    # Bottom Right Of The Texture and Quad
-        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 1.0)    # Top Right Of The Texture and Quad
-        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 1.0)    # Top Left Of The Texture and Quad
+        glBegin(GL_QUADS)
         
-        # Back Face
-        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 0)    # Bottom Right Of The Texture and Quad
-        glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 0)    # Top Right Of The Texture and Quad
-        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)    # Top Left Of The Texture and Quad
-        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 0)    # Bottom Left Of The Texture and Quad
+        glNormal3f(0, 0, 1)
+        glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 1.0)
+        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 1.0)
+        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 1.0)
+        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 1.0)
         
-        # Top Face
-        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)    # Top Left Of The Texture and Quad
-        glTexCoord2f(0.0, 0.0); glVertex3f(0, 1.0, 1.0)    # Bottom Left Of The Texture and Quad
-        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 1.0, 1.0)    # Bottom Right Of The Texture and Quad
-        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)    # Top Right Of The Texture and Quad
+        glNormal3f(0, 0, -1)
+        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 0)
+        glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 0)
+        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)
+        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 0)
         
-        # Bottom Face       
-        glTexCoord2f(1.0, 1.0); glVertex3f(0, 0, 0)    # Top Right Of The Texture and Quad
-        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)    # Top Left Of The Texture and Quad
-        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)    # Bottom Left Of The Texture and Quad
-        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)    # Bottom Right Of The Texture and Quad
+        glNormal3f(0, 1, 0)
+        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)
+        glTexCoord2f(0.0, 0.0); glVertex3f(0, 1.0, 1.0)
+        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 1.0, 1.0)
+        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)
         
-        # Right face
-        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 0)    # Bottom Right Of The Texture and Quad
-        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)    # Top Right Of The Texture and Quad
-        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 1.0, 1.0)    # Top Left Of The Texture and Quad
-        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)    # Bottom Left Of The Texture and Quad
+        glNormal3f(0, -1, 0)
+        glTexCoord2f(1.0, 1.0); glVertex3f(0, 0, 0)
+        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)
+        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)
+        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)
         
-        # Left Face
-        glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 0)    # Bottom Left Of The Texture and Quad
-        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)    # Bottom Right Of The Texture and Quad
-        glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 1.0)    # Top Right Of The Texture and Quad
-        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)    # Top Left Of The Texture and Quad
+        glNormal3f(1, 0, 0)
+        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 0)
+        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)
+        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 1.0, 1.0)
+        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)
+        
+        glNormal3f(-1, 0, 0)
+        glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 0)
+        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)
+        glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 1.0)
+        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)
         
         glEnd()
         
         glPopMatrix()
-    
+        
