@@ -37,6 +37,8 @@ class Road ():
         
         glBegin(GL_QUADS)
         
+        glNormal3f(0,0,1)
+        
         glTexCoord2f(1.0, 1.0) 
         glVertex3f(0, 0, 0)
         
@@ -52,4 +54,5 @@ class Road ():
         glEnd()
         
         glPopMatrix()
+        
     

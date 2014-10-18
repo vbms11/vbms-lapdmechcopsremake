@@ -5,6 +5,7 @@ Created on Oct 16, 2014
 '''
 
 import math
+from math import degrees, atan2
 
 class Vec3:
     ''' A three dimensional vector '''
@@ -82,3 +83,8 @@ class Vec3:
     def normalize(self):
         '''Normalize this Vec3'''        
         self /= self.length()
+    
+    def getHorizontalAngle (self):
+        return (degrees(atan2(self.y, self.x)) + 360) % 360
+    def getVerticalAngle (self):
+        return self.dot(Vec3(0, 0, -1))
