@@ -6,8 +6,12 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 import config
-from game import Game
+from core.game import Game
 import time
+from PIL.FontFile import WIDTH
+
+mouseX = None
+mouseY = None
 
 def initGame ():
     
@@ -47,9 +51,13 @@ def InitGL(Width, Height):                # We call this right after our OpenGL 
 
 # The function called when our window is resized (which shouldn't happen if you enable fullscreen, below)
 def ReSizeGLScene(Width, Height):
+    
     if Height == 0:                        # Prevent A Divide By Zero If The Window Is Too Small 
         Height = 1
-
+    
+    config.windowWidth = Width
+    config.windowHeight = Height
+    
     glViewport(0, 0, Width, Height)        # Reset The Current Viewport And Perspective Transformation
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -59,21 +67,23 @@ def ReSizeGLScene(Width, Height):
 # The main drawing function. 
 def reRender():
     
-    windowWidth = glutGet(GLUT_WINDOW_WIDTH)
-    windowHeight = glutGet(GLUT_WINDOW_HEIGHT)
+    global game, lastFrameTime, mouseX, mouseY
     
-    glutWarpPointer(windowWidth / 2, windowHeight / 2)
+    # reset mouse position
+    if mouseX != config.windowWidth / 2 or mouseY != config.windowHeight / 2:
+        glutWarpPointer(config.windowWidth / 2, config.windowHeight / 2)
     
-    global game, lastFrameTime
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)    # Clear The Screen And The Depth Buffer
-    glLoadIdentity()                    # Reset The View
+    # clear screen
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glLoadIdentity()
     
+    # get current frame interval
     currentFrameTime = int(round(time.time() * 1000))
     frameInterval = currentFrameTime - lastFrameTime
     
     try:
         
+        # update and render game
         config.game.update(frameInterval)
         config.game.paint()
         
@@ -140,19 +150,19 @@ def keyReleased (*args):
 
 def mouseEvents (x, y):
     
+    global mouseX, mouseY
+    mouseX = x
+    mouseY = y
+    
     try:
         
         if config.centerMouse:
             
-            # windowX = glutGet(GLUT_WINDOW_X)
-            # windowY = glutGet(GLUT_WINDOW_Y)
-            windowWidth = glutGet(GLUT_WINDOW_WIDTH)
-            windowHeight = glutGet(GLUT_WINDOW_HEIGHT)
+            offsetX = x - config.windowWidth / 2
+            offsetY = y - config.windowHeight / 2
             
-            offsetX = x - windowWidth / 2
-            offsetY = y - windowHeight / 2
-            
-            config.game.moveMouse(offsetX, offsetY);
+            if offsetX != 0 or offsetY != 0:
+                config.game.moveMouse(offsetX, offsetY);
         else:
             pass
         
@@ -167,10 +177,10 @@ def main():
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH)
     
-    glutInitWindowSize(640, 480)
+    glutInitWindowSize(config.windowWidth, config.windowHeight)
     glutInitWindowPosition(0, 0)
     
-    window = glutCreateWindow("Robot War Arena")
+    window = glutCreateWindow(config.windowTitel)
     
     #glutFullScreen()
     glutDisplayFunc(reRender)
@@ -191,7 +201,7 @@ def main():
     glutSetCursor(GLUT_CURSOR_NONE);
     
     # Initialize our window. 
-    InitGL(640, 480)
+    InitGL(config.windowWidth, config.windowHeight)
     
     initGame()
     

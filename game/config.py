@@ -8,8 +8,11 @@ __version__ = '0.1'
 __date__ = ''
 __author__ = 'Silvester Muhlhaus <silkyfx@gmail.com>'
 
-ESCAPE = '\033'
+windowTitel = "Robot War Arena"
+windowWidth = 640
+windowHeight = 480            
 
+ESCAPE = '\033'
 key_moveForwald = "w"
 key_moveBackwald = "s"
 key_straffLeft = ""
@@ -22,4 +25,9 @@ game = None
 lastFrameTime = None
 
 centerMouse = True;
-mouseSensitifiy = 1.0;
+mouseSensitifiy = 0.1;
+
+roadsTextured = False
+buildingsTextured = False
+
+
