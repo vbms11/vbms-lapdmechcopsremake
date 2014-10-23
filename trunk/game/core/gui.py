@@ -68,8 +68,15 @@ class GUI(object):
         self.demoMenu.Initialize()
         self.demoMenu.Setup()
         return
- 
+    
+    def removeCurrentLayout (self):
+        pass
+        #.destroyWindow( mRootWindow );
+    
     # Setup: Interface
     def setupInterface(self):
+        
+        # self.removeCurrentLayout()
+        
         self.Setup()
         return
