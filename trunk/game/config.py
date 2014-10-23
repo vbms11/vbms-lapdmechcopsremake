@@ -4,6 +4,14 @@ Created on Oct 18, 2014
 @author: vbms
 '''
 
+import sys
+
+try:
+    import psyco
+    psyco.full()
+except ImportError:
+    pass
+
 __version__ = '0.1'
 __date__ = ''
 __author__ = 'Silvester Muhlhaus <silkyfx@gmail.com>'

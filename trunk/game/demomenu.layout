@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<GUILayout>
+    <Window Type="TaharezLook/FrameWindow" Name="DemoMenu" >
+        <Property Name="Font" Value="DejaVuSans-10" />
+        <Property Name="Text" Value="Demo Menu" />
+        <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+        <Property Name="RollUpEnabled" Value="False" />
+        <Property Name="TitlebarEnabled" Value="True" />
+        <Property Name="UnifiedAreaRect" Value="{{0.157031,0},{0.194911,0},{0.783984,0},{0.687913,0}}" />
+        <Property Name="DragMovingEnabled" Value="False" />
+        <Property Name="CloseButtonEnabled" Value="False" />
+        <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+        <Property Name="InheritsTooltipText" Value="False" />
+        <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+        <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+        <Property Name="NWSESizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+        <Window Type="TaharezLook/StaticText" Name="DemoMenu/Text" >
+            <Property Name="Text" Value="Enter some text" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0212363,0},{0.619781,0},{0.346946,0},{0.751932,0}}" />
+        </Window>
+        <Window Type="TaharezLook/Editbox" Name="DemoMenu/Edit" >
+            <Property Name="MaxTextLength" Value="1073741823" />
+            <Property Name="UnifiedAreaRect" Value="{{0.36704,0},{0.623671,0},{0.769671,0},{0.750419,0}}" />
+            <Property Name="TextParsingEnabled" Value="False" />
+        </Window>
+        <Window Type="TaharezLook/Button" Name="DemoMenu/Button" >
+            <Property Name="Text" Value="Click me" />
+            <Property Name="UnifiedAreaRect" Value="{{0.78567,0},{0.620646,0},{0.979596,0},{0.749355,0}}" />
+        </Window>
+    </Window>
+</GUILayout>
