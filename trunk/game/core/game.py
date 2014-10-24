@@ -72,6 +72,8 @@ class Game:
             self.selectedVehicle.moveForwald()
         if self.moveBackwald and not self.moveForwald:
             self.selectedVehicle.moveBackwald()
+        for vehicle in self.vehicles:
+            vehicle.update()
         
         # set camera
         self.camera.setPosition(*self.selectedVehicle.getCameraPosition());

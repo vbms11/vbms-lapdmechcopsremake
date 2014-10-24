@@ -49,20 +49,23 @@ class RoadTile ():
         countNeighbors = 0
         neighbors = [False, False, False, False]
         
-        if self.position[0] > 0 and config.game.level.isRoad(self.position[0] - 1, self.position[1]):
+        if self.position[0] > 0 and config.game.level.isRoad(self.position[0] - 1, self.position[1], True):
             countNeighbors += 1
             neighbors[2] = True
-        if self.position[0] < config.game.level.levelSize[0] - 1 and config.game.level.isRoad(self.position[0] + 1, self.position[1]):
+        if self.position[0] < config.game.level.levelSize[0] - 1 and config.game.level.isRoad(self.position[0] + 1, self.position[1], True):
             countNeighbors += 1
             neighbors[0] = True
-        if self.position[1] > 0 and config.game.level.isRoad(self.position[0], self.position[1] - 1):
+        if self.position[1] > 0 and config.game.level.isRoad(self.position[0], self.position[1] - 1, True):
             countNeighbors += 1
             neighbors[3] = True
-        if self.position[1] < config.game.level.levelSize[1] - 1 and config.game.level.isRoad(self.position[0], self.position[1] + 1):
+        if self.position[1] < config.game.level.levelSize[1] - 1 and config.game.level.isRoad(self.position[0], self.position[1] + 1, True):
             countNeighbors += 1
             neighbors[1] = True
         
-        if countNeighbors == 1:
+        if countNeighbors == 0:
+            self.texture = choice(self.straightTextures)
+            self.rotation = 0
+        elif countNeighbors == 1:
             self.texture = choice(self.straightTextures)
             if neighbors[0] or neighbors[2]:
                 self.rotation = 0;
@@ -91,7 +94,7 @@ class RoadTile ():
     def paint (self):
         
         glPushMatrix();
-        
+        print self.rotation
         glEnable(GL_TEXTURE_2D)
         glBindTexture(GL_TEXTURE_2D, self.texture)
         glTranslatef(self.position[0] + 0.5, self.position[1] + 0.5, self.position[2]);

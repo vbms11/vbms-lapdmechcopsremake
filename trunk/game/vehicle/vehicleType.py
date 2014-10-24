@@ -123,20 +123,25 @@ class VehicleType:
     
     def adjustTurretDirection (self):
         
-        amount = self.turretRotateSpeed / 1000 * config.game.millis
-        angle = self.turretDirection.getHorizontalAngle()
+        amount = self.turretRotateSpeed / 1000.0 * config.game.millis
+        turretAngle = self.turretDirection.getHorizontalAngle()
         aimAngle = self.aimDirection.getHorizontalAngle()
         
-        # horizontal corrections
-        if angle != aimAngle:
-            diffAngles = aimAngle - angle
-            #if diffAngle == 0:
-            #if diffAngles < 0:
-            #amount = - amount
+        if aimAngle > turretAngle:
+            difference = aimAngle - turretAngle
+            if difference > 180:
+                amount = -amount
         else:
-            pass
+            difference = turretAngle - aimAngle
+            if difference < 180:
+                amount = -amount
+        
+        if amount < 0 and amount + turretAngle > aimAngle:
+            turretAngle = aimAngle % 360
+        elif amount > 0 and amount + turretAngle < aimAngle:
+            turretAngle = aimAngle % 360
             
-                
+        self.turretDirection = Vec3(cos(radians(turretAngle)), sin(radians(turretAngle)), 0)
     
     def paintBoundingBox (self):
         
