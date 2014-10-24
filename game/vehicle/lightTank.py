@@ -18,7 +18,7 @@ class LightTank (VehicleType):
         Constructor
         '''
         self.speed = 0.2
-        self.rotateSpeed = 40
+        self.rotateSpeed = 10
         self.turretRotateSpeed = 40
     
     def init (self, position):
@@ -48,7 +48,7 @@ class LightTank (VehicleType):
         glPushMatrix()
         glTranslate(self.boundingBox[0] / 2, self.boundingBox[1] / 2, 0);
         glRotatef(self.turretDirection.getHorizontalAngle(), 0, 0, 1);
-        glTranslate(self.boundingBox[0] / 2, self.boundingBox[1] / 2, 0);
+        glTranslate(-self.boundingBox[0] / 2, -self.boundingBox[1] / 2, 0);
         self.paintBox(5 * 0.02, 5 * 0.02, 5.5 * 0.02, 6 * 0.02, 6 * 0.02, 3 * 0.02);
         #self.paintCylinder(9, 5, 2.5, 2, 0.5, 0.2);, 0.02
         glPopMatrix()
