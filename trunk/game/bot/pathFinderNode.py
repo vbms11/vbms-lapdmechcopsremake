@@ -1,10 +1,12 @@
 
+import config
+
 class PathFinderNode:
     
     x = None
     y = None
     parent = None
-    options = [[True for x in xrange(3)] for y in xrange(3)]
+    options = [[False for x in xrange(3)] for y in xrange(3)]
     
     def __init__ (self, x, y, parent = None):
         
@@ -12,28 +14,28 @@ class PathFinderNode:
         self.y = y
         self.parent = parent
         
+        # set options based on level
+        if config.game.level.isDriveable(x - 1, y):
+            self.options[0][1] = True
+        if config.game.level.isDriveable(x, y - 1):
+            self.options[1][0] = True
+        if config.game.level.isDriveable(x + 1, y):
+            self.options[2][1] = True
+        if config.game.level.isDriveable(x, y + 1):
+            self.options[1][2] = True
+        
         # use all parent options
         while parent != None:
             self.useOption(parent.x, parent.y)
             parent = parent.parent
-        
-        # set options based on level
-        if game.level.isRoad(x + 1, y + 0):
-            self.options[x + 1][y + 0] = False
-        if game.level.isRoad(x + 0, y + 1):
-            self.options[x + 0][y + 1] = False
-        if game.level.isRoad(x + 2, y + 1):
-            self.options[x + 2][y + 1] = False
-        if game.level.isRoad(x + 1, y + 2):
-            self.options[x + 1][y + 2] = False
     
     def useOption (self, x, y):
         
-        x = 1 + self.x - x
-        y = 1 + self.y - y
+        x = 1 + x - self.x
+        y = 1 + y - self.y
         
-        if x in range(0, 2) and y in range(0, 2):
-            self.options[1 + self.x - x][1 + self.y - y] = False
+        if x in range(0, 3) and y in range(0, 3):
+            self.options[x][y] = False
     
     def hasOptions (self):
         
@@ -41,5 +43,7 @@ class PathFinderNode:
     
     def hasOption (self, x, y):
         
-        return self.options[1 + self.x - x][1 + self.y - y]
+        nx = 1 + x - self.x
+        ny = 1 + y - self.y
+        return self.options[nx][ny]
         

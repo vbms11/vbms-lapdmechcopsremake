@@ -14,6 +14,22 @@ class PathFinder:
     scoreNodeMap = None
     scoreNodeMapSize = None
     
+    def __init__ (self):
+        
+        pass
+    
+    def printScoreNodeMap (self):
+        for y in xrange(self.scoreNodeMapSize[1]):
+            line = ""
+            for x in xrange(self.scoreNodeMapSize[0]):
+                if self.scoreNodeMap[y][x] == None:
+                    char = "-"
+                else:
+                    char = self.scoreNodeMap[y][x][0]
+                line = line + str(char)
+            print line
+        print "-" * self.scoreNodeMapSize[0]
+    
     def findPath (self, startX, startY, endX, endY):
         
         self.startX = startX
@@ -27,6 +43,7 @@ class PathFinder:
         self.scoreNodeMapSize = level.levelSize
         
         currentNode = PathFinderNode(startX, startY)
+        self.scoreNodeMap[startY][startX] = [0, currentNode, False]
         
         directionX, directionY, pDirectionX, pDirectionY = self.getDirections(currentNode)
         
@@ -40,21 +57,24 @@ class PathFinder:
         
         shorterPathPossible = True
         bestPath = None
-        bestScore = 0
+        bestScore = None
         optionsExist = True
+        currentScore = 0
         
         while shorterPathPossible and optionsExist:
             
-            currentScore = 0
+            #currentScore = 0
             goalReached = False
             
             while optionsExist and not goalReached:
                 
+                self.printScoreNodeMap()
+                if currentScore == 1:
+                    pass
                 currentScore += 1
-                
                 x, y, optionFound = self.getNextDirection(currentNode)
                 
-                if self.scoreNodeMap[y][x] == None or self.scoreNodeMap[y][x][0] <= currentScore or (bestScore != None and currentScore > bestScore):
+                if optionFound and ((self.scoreNodeMap[y][x] != None and self.scoreNodeMap[y][x][0] <= currentScore) or (bestScore != None and currentScore > bestScore)):
                     optionFound = False
                 
                 if optionFound:
@@ -66,16 +86,16 @@ class PathFinder:
                         # switch parent to the quicker path parent
                         linkNode = self.scoreNodeMap[y][x][1]
                         linkNode.parent = currentNode
-                        self.scoreNodeMap[y][x] = [currentScore, linkNode, True]
+                        self.scoreNodeMap[linkNode.y][linkNode.x] = [currentScore, linkNode, True]
                         currentNode = linkNode
                         # update all child nodes to quicker path parent
-                        parentNode = self.findChildNode(currentNode)
-                        while parentNode != None:
+                        childNode = self.findChildNode(currentNode)
+                        while childNode != None:
                             currentScore += 1
-                            parentNode.parent = currentNode
-                            currentNode = parentNode
-                            parentNode = self.findChildNode(currentNode)
-                            self.scoreNodeMap[y][x][0] = currentScore
+                            childNode.parent = currentNode
+                            currentNode = childNode
+                            childNode = self.findChildNode(currentNode)
+                            self.scoreNodeMap[currentNode.y][currentNode.x][0] = currentScore
                     else:
                         currentNode = PathFinderNode(x, y, currentNode)
                         self.scoreNodeMap[y][x] = [currentScore, currentNode, False]
@@ -83,13 +103,19 @@ class PathFinder:
                     if x == endX and y == endY:
                         goalReached = True
                 else:
-                    # go back
-                    currentNode = currentNode.parentNode
                     # do any more options exist
-                    if currentNode.x == self.startX and currentNode.y == self.startY and not currentNode.hasOptions():
+                    print currentScore
+                    print " x: ",currentNode.x, " y: ",currentNode.y
+                    if currentNode.x == self.startX and currentNode.y == self.startY:
                         optionsExist = False
+                        print "i think no more options exist"
+                    else:
+                        # go back
+                        currentNode = currentNode.parent
+                        currentScore -= 2
             
             if goalReached:
+                print "goal reached score: ", currentScore
                 # save path if it got the best score
                 if bestScore == None or currentScore < bestScore:
                     bestScore = currentScore
@@ -104,15 +130,12 @@ class PathFinder:
                     # didnt reach goal before so save
                     if not self.scoreNodeMap[parentNode.y][parentNode.x][2]:
                         self.scoreNodeMap[parentNode.y][parentNode.x] = [parentScore, parentNode, True]
-                    else:
-                        # if this path was better save it
-                        if parentScore < self.scoreNodeMap[parentNode.y][parentNode.x][0]:
-                            self.scoreNodeMap[parentNode.y][parentNode.x] = [parentScore, parentNode, True]
                     # select next parent node
-                    parentScore = parentScore - 1 
+                    parentScore -= 1 
                     parentNode = parentNode.parent
                 # next path starts from parent node
                 currentNode = lastNode
+                currentScore -= 1
         
         # if a path was found return it
         path = None
@@ -151,42 +174,42 @@ class PathFinder:
         directionX, directionY, pDirectionX, pDirectionY = self.getDirections(currentNode)
         
         # always try the shortest distance if its an option
-        if pDirectionX < pDirectionY and directionX < 0 and currentNode.isOption(x - 1, y):
+        if pDirectionX <= pDirectionY and directionX < 0 and currentNode.hasOption(x - 1, y):
             return (x - 1, y, True)
         
-        if pDirectionX < pDirectionY and directionX > 0 and currentNode.isOption(x + 1, y):
+        if pDirectionX <= pDirectionY and directionX > 0 and currentNode.hasOption(x + 1, y):
             return (x + 1, y, True)
         
-        if pDirectionX > pDirectionY and directionY < 0 and currentNode.isOption(x, y - 1):
+        if pDirectionX >= pDirectionY and directionY < 0 and currentNode.hasOption(x, y - 1):
             return (x, y - 1, True)
         
-        if pDirectionX > pDirectionY and directionY > 0 and currentNode.isOption(x, y + 1):
+        if pDirectionX >= pDirectionY and directionY > 0 and currentNode.hasOption(x, y + 1):
             return (x, y + 1, True)
         
         # just try going in the right direction
-        if directionX < 0 and currentNode.isOption(x - 1, y):
+        if directionX < 0 and currentNode.hasOption(x - 1, y):
             return (x - 1, y, True)
         
-        if directionX > 0 and currentNode.isOption(x + 1, y):
+        if directionX > 0 and currentNode.hasOption(x + 1, y):
             return (x + 1, y, True)
         
-        if directionY < 0 and currentNode.isOption(x, y - 1):
+        if directionY < 0 and currentNode.hasOption(x, y - 1):
             return (x, y - 1, True)
         
-        if directionY > 0 and currentNode.isOption(x, y + 1):
+        if directionY > 0 and currentNode.hasOption(x, y + 1):
             return (x, y + 1, True)
         
         # try anything thats still possible
-        if currentNode.isOption(x - 1, y):
+        if currentNode.hasOption(x - 1, y):
             return (x - 1, y, True)
         
-        if currentNode.isOption(x + 1, y):
+        if currentNode.hasOption(x + 1, y):
             return (x + 1, y, True)
         
-        if currentNode.isOption(x, y - 1):
+        if currentNode.hasOption(x, y - 1):
             return (x, y - 1, True)
         
-        if currentNode.isOption(x, y + 1):
+        if currentNode.hasOption(x, y + 1):
             return (x, y + 1, True)
         
         
