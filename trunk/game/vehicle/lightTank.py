@@ -18,14 +18,10 @@ class LightTank (VehicleType):
         Constructor
         '''
         self.speed = 0.2
-        self.rotateSpeed = 10
-        self.turretRotateSpeed = 40
-    
-    def init (self, position):
-        
-        self.position = position
+        self.rotateSpeed = 30
+        self.turretRotateSpeed = 30
         self.boundingBox = (0.2,0.2,0.2)
-        
+    
     def paint (self):
         
         glPushMatrix();

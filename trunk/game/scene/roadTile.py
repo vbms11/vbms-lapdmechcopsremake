@@ -9,8 +9,9 @@ from OpenGL.GLU import *
 from util.textureLoader import loadTexture
 import config
 from random import random, choice
+from scene.sceneTile import SceneTile
 
-class RoadTile ():
+class RoadTile (SceneTile):
     '''
     classdocs
     '''
@@ -24,8 +25,9 @@ class RoadTile ():
     pathmentTexture = None
     texture = None
     rotation = None
+    displayListId = None
     
-    def __init__(self, position = (0,0,0)):
+    def __init__(self, sceneTile, position = (0,0,0)):
         '''
         Constructor
         '''
@@ -72,50 +74,70 @@ class RoadTile ():
             else:
                 self.rotation = 90;
         elif countNeighbors == 2:
-            self.texture = choice(self.straightTextures)
-            if neighbors[0] and neighbors[2]:
+            self.texture = self.cornerTexture
+            if neighbors[0] and neighbors[3]:
+                self.texture = self.cornerTexture
                 self.rotation = 0;
-            else:
+            elif neighbors[0] and neighbors[1]:
+                self.texture = self.cornerTexture
                 self.rotation = 90;
+            elif neighbors[1] and neighbors[2]:
+                self.texture = self.cornerTexture
+                self.rotation = 180;
+            elif neighbors[2] and neighbors[3]:
+                self.texture = self.cornerTexture
+                self.rotation = 270;
+            elif neighbors[0] and neighbors[2]:
+                self.texture = choice(self.straightTextures)
+                self.rotation = choice([0, 180])
+            elif neighbors[1] and neighbors[3]:
+                self.texture = choice(self.straightTextures)
+                self.rotation = choice([90, 270])
         elif countNeighbors == 3:
             self.texture = self.junction3Texture
             if neighbors[0] and neighbors[1] and neighbors[2]:
                 self.rotation = 180
             elif neighbors[1] and neighbors[2] and neighbors[3]:
-                self.rotation = 90
+                self.rotation = 270
             elif neighbors[2] and neighbors[3] and neighbors[0]:
                 self.rotation = 0
             elif neighbors[3] and neighbors[0] and neighbors[1]:
-                self.rotation = 270
+                self.rotation = 90
         elif countNeighbors == 4:
             self.texture = self.junction4Texture
             self.rotation = 0
         
     def paint (self):
         
-        glPushMatrix();
-        print self.rotation
-        glEnable(GL_TEXTURE_2D)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
-        glTranslatef(self.position[0] + 0.5, self.position[1] + 0.5, self.position[2]);
-        glRotate(self.rotation, 0.0, 0.0, 1.0)
+        if self.displayListId == None:
+            self.displayListId = glGenLists(1);
+            glNewList(self.displayListId, GL_COMPILE);
         
-        glBegin(GL_QUADS)
-        
-        glNormal3f(0,0,1)
-        glTexCoord2f(0.0, 0.0) 
-        glVertex3f(-0.5, -0.5, 0)
-        glTexCoord2f(1.0, 0.0)
-        glVertex3f(0.5, -0.5, 0)
-        
-        glTexCoord2f(1.0, 1.0)
-        glVertex3f(0.5, 0.5, 0)
-        glTexCoord2f(0.0, 1.0)
-        glVertex3f(-0.5, 0.5, 0)
-        
-        glEnd()
-        
-        glDisable(GL_TEXTURE_2D)
-        glPopMatrix()
+            glPushMatrix();
+            
+            glBindTexture(GL_TEXTURE_2D, self.texture)
+            glTranslatef(self.position[0] + 0.5, self.position[1] + 0.5, self.position[2]);
+            glRotate(self.rotation, 0.0, 0.0, 1.0)
+            
+            glBegin(GL_QUADS)
+            
+            glNormal3f(0,0,1)
+            glTexCoord2f(0.0, 0.0) 
+            glVertex3f(-0.5, -0.5, 0)
+            glTexCoord2f(1.0, 0.0)
+            glVertex3f(0.5, -0.5, 0)
+            
+            glTexCoord2f(1.0, 1.0)
+            glVertex3f(0.5, 0.5, 0)
+            glTexCoord2f(0.0, 1.0)
+            glVertex3f(-0.5, 0.5, 0)
+            
+            glEnd()
+            
+            glPopMatrix()
+            
+            glEndList()
+            
+        glCallList(self.displayListId)
         
     

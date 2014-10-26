@@ -38,4 +38,10 @@ mouseSensitifiy = 0.1;
 roadsTextured = False
 buildingsTextured = False
 
+textureMode_nearest = 1
+textureMode_linear = 2
+textureMode_mipmap = 3
+textureMode = textureMode_mipmap
+
+
 

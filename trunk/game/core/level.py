@@ -3,9 +3,12 @@ Created on Oct 16, 2014
 
 @author: vbms
 '''
+from math import floor
+from scene.sceneTile import SceneTile
 from scene.buildingTile import BuildingTile
 from scene.roadTile import RoadTile
-from math import floor
+from scene.baseTile import BaseTile
+from scene.pathmentTile import PathmentTile
 
 class Level():
     '''
@@ -14,33 +17,22 @@ class Level():
     level = None
     levelSize = None
     outOfBoundsSize = None
-
-    def __init__(self, levelSize = (10,10), outOfBoundsSize = 10):
+    levelFile = None
+    bases = None
+    
+    def __init__(self, levelFile):
         '''
         Constructor
         '''
-        self.levelSize = levelSize
-        self.outOfBoundsSize = outOfBoundsSize
+        self.levelFile = levelFile
+        self.bases = []
+    
+    def init (self):
         
         print "initializing level"
         
-        self.level = [[0 for x in xrange(self.levelSize[0] + self.outOfBoundsSize * 2)] for y in xrange(self.levelSize[1] + self.outOfBoundsSize * 2)]
-        
-        # set types
-        for y in xrange(0, self.levelSize[1] + self.outOfBoundsSize * 2):
-            for x in xrange(0, self.levelSize[0] + self.outOfBoundsSize * 2):
-                
-                if x % 2 == 0 and y % 2 == 0:
-                    if x - 2 < self.outOfBoundsSize or x + 2 > outOfBoundsSize or y - 2 < self.outOfBoundsSize or y - 2 > outOfBoundsSize:
-                        self.level[y][x] = BuildingTile((x, y, 0.5))
-                    
-                    else:
-                        self.level[y][x] = RoadTile((x, y, 0.5))
-                    self.level[y][x] = BuildingTile((x,y,0))
-                else:
-                    self.level[y][x] = RoadTile((x,y,0))
-        
-    def init (self):
+        # load level
+        self.loadLevelFile()
         
         # initialize level tiles
         for y in xrange(0, self.levelSize[1] + self.outOfBoundsSize * 2):
@@ -59,7 +51,7 @@ class Level():
         
         return
     
-    def isRoad (self, x, y, outOfBounds = False):
+    def getLevelGridCoordinate (self, x, y, outOfBounds):
         
         if outOfBounds:
             x = int(x)
@@ -75,5 +67,51 @@ class Level():
         if x < 0 or x >= maxX or y < 0 or y >= maxY:
             return False
         
-        return isinstance(self.level[y][x], RoadTile)
+        return (x, y)
     
+    def isRoad (self, x, y, outOfBounds = False):
+        
+        coordinates = self.getLevelGridCoordinate(x, y, outOfBounds)
+        
+        if coordinates == False:
+            return False
+        
+        return isinstance(self.level[coordinates[1]][coordinates[0]], RoadTile)
+    
+    def isDriveable (self, x, y, outOfBounds = False):
+        
+        coordinates = self.getLevelGridCoordinate(x, y, outOfBounds)
+        
+        if coordinates == False:
+            return False
+        
+        return isinstance(self.level[coordinates[1]][coordinates[0]], RoadTile) or isinstance(self.level[coordinates[1]][coordinates[0]], PathmentTile)
+    
+    def loadLevelFile (self):
+        
+        # read the file
+        f = open(self.levelFile)
+        lines = f.read().splitlines()
+        f.close()
+        
+        sizeY = len(lines)
+        sizeX = len(lines[0])
+        
+        self.level = [[0 for x in xrange(sizeX)] for y in xrange(sizeY)]
+        self.levelSize = [sizeX, sizeY]
+        self.outOfBoundsSize = 0
+        
+        for y in xrange(0, sizeY):
+            for x in xrange(0, sizeX):
+                type = lines[y][x]
+                if type == "#":
+                    self.level[y][x] = BuildingTile(SceneTile, (x, y, 0))
+                elif type == "X":
+                    base = BaseTile(SceneTile, (x, y, 0))
+                    self.bases.append(base)
+                    self.level[y][x] = base
+                elif type == "+":
+                    self.level[y][x] = RoadTile(SceneTile, (x, y, 0))
+                elif type == "-":
+                    self.level[y][x] = PathmentTile(SceneTile, (x, y, 0))
+        

@@ -9,6 +9,7 @@ from OpenGL.GLU import *
 from util.textureLoader import loadSphereTexture, destroyTexture
 
 import config
+from math import sqrt
 
 class SkyDome:
     '''
@@ -17,6 +18,7 @@ class SkyDome:
     
     texture = None
     displayListId = None
+    radius = None
     
     def __init__(self):
         '''
@@ -25,9 +27,13 @@ class SkyDome:
         pass
     
     def init (self, filename):
+        
         self.texture = loadSphereTexture(filename)
+        levelSize = config.game.level.levelSize[0] / 2 + config.game.level.outOfBoundsSize
+        self.radius = sqrt(levelSize * levelSize + levelSize * levelSize) + 2
     
     def destroy (self):
+        
         destroyTexture(self.texture)
         glDeleteLists(self.displayListId)
     
@@ -42,15 +48,13 @@ class SkyDome:
             gluQuadricTexture(quadratic, GL_TRUE)
             glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP)
             glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP)
-            radius = config.game.level.levelSize[0] / 2 + config.game.level.outOfBoundsSize
-            
             glNewList(self.displayListId, GL_COMPILE);
             
             glDisable(GL_LIGHTING)
             glPushMatrix()
             glTranslatef(config.game.level.levelSize[0] / 2, config.game.level.levelSize[1] / 2, 0);
             glBindTexture(GL_TEXTURE_2D, self.texture)
-            gluSphere(quadratic, radius, 32, 32)
+            gluSphere(quadratic, self.radius, 32, 32)
             glPopMatrix()
             glEnable(GL_LIGHTING)
             

@@ -4,7 +4,6 @@ Created on Oct 16, 2014
 @author: vbms
 '''
 
-from abc import ABCMeta, abstractmethod
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -14,12 +13,12 @@ from math import cos, sin, degrees, atan2, radians
 from random import choice
 from util.textureLoader import loadTexture
 import config
+from scene.sceneTile import SceneTile
 
-class BaseTile ():
+class BaseTile (SceneTile):
     '''
     classdocs
     '''
-    __metaclass__ = ABCMeta
     
     textures = None
     texture = None
@@ -28,18 +27,17 @@ class BaseTile ():
     owner = None
     defaultColor = (1.0, 1.0, 1.0)
     
-    def __init__(self, position = (0,0,0)):
+    def __init__(self, sceneTile, position = (0,0,0)):
         '''
         Constructor
         '''
         self.position = position
         
-        if BuildingTile.textures == None:
-            BuildingTile.textures = []
-        #    BuildingTile.textures.append(loadTexture("NeHe.bmp"))
+        if BaseTile.textures == None:
+            BaseTile.textures = []
+            BaseTile.textures.append(loadTexture("textures/army.jpg"))
         
-        #if self.texture == None:
-        #    self.texture = choice(BuildingTile.textures)
+        self.texture = choice(BaseTile.textures)
     
     def init (self):
         pass
@@ -50,20 +48,23 @@ class BaseTile ():
         
         glTranslate(*self.position)
         
+        glBindTexture(GL_TEXTURE_2D, self.texture)
+        
         self.paintBox(0,0,0,1,1,1)
         
         color = self.defaultColor
-        if self.owner == None:
+        if self.owner != None:
             color = self.owner.color
         
-        self.paintBounds(-1 + 0.01, -1 + 0.01, -1 + 0.01, 3 + 0.02, 3 + 0.02, 0.02, *color)
+        self.paintBounds(-1 + 0.01, -1 + 0.01, 0, 3 - 0.02, 3 - 0.02, 0.02, *color)
         
         glPopMatrix()
     
     def paintBounds (self, posX, posY, posZ, sizeX, sizeY, sizeZ, colorR, colorG, colorB):
         
         glPushMatrix()
-        glDissable(GL_TEXTURE_2D)
+        
+        glTranslatef(posX, posY, posZ)
         
         glBegin(GL_QUAD_STRIP)
         
@@ -101,6 +102,5 @@ class BaseTile ():
         
         glEnd()
         
-        glEnable(GL_TEXTURE_2D)
         glPopMatrix()
         
