@@ -8,8 +8,9 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from random import choice
 from util.textureLoader import loadTexture
+from scene.sceneTile import SceneTile
 
-class BuildingTile ():
+class BuildingTile (SceneTile):
     '''
     classdocs
     '''
@@ -17,8 +18,9 @@ class BuildingTile ():
     textures = None
     texture = None
     position = None
+    displayListId = None
 
-    def __init__(self, position = (0,0,0)):
+    def __init__(self, sceneTile, position = (0,0,0)):
         '''
         Constructor
         '''
@@ -26,58 +28,69 @@ class BuildingTile ():
         
         if BuildingTile.textures == None:
             BuildingTile.textures = []
-        #    BuildingTile.textures.append(loadTexture("NeHe.bmp"))
+            BuildingTile.textures.append(loadTexture("textures/building1.jpg"))
+            BuildingTile.textures.append(loadTexture("textures/building2.jpg"))
+            BuildingTile.textures.append(loadTexture("textures/building3.jpg"))
         
-        #if self.texture == None:
-        #    self.texture = choice(BuildingTile.textures)
+        self.texture = choice(BuildingTile.textures)
     
     def init (self):
         pass
     def paint (self):
         
-        glPushMatrix();
+        if self.displayListId == None:
+            self.displayListId = glGenLists(1);
+            glNewList(self.displayListId, GL_COMPILE);
+            
+            glBindTexture(GL_TEXTURE_2D, self.texture)
+            
+            glPushMatrix();
+            
+            glTranslate(*self.position);
+            
+            glBegin(GL_QUADS)
+            
+            glNormal3f(0, 0, 1)
+            glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 1.0)
+            glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 1.0)
+            glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 1.0)
+            glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 1.0)
+            
+            glNormal3f(0, 0, -1)
+            glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 0)
+            glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 0)
+            glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)
+            glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 0)
+            
+            glNormal3f(0, 1, 0)
+            glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)
+            glTexCoord2f(0.0, 0.0); glVertex3f(0, 1.0, 1.0)
+            glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 1.0, 1.0)
+            glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)
+            
+            glNormal3f(0, -1, 0)
+            glTexCoord2f(1.0, 1.0); glVertex3f(0, 0, 0)
+            glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)
+            glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)
+            glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)
+            
+            glNormal3f(1, 0, 0)
+            glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 0)
+            glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)
+            glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 1.0, 1.0)
+            glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)
+            
+            glNormal3f(-1, 0, 0)
+            glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 0)
+            glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)
+            glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 1.0)
+            glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)
+            
+            glEnd()
+            
+            glPopMatrix()
+            
+            glEndList()
         
-        glTranslate(*self.position);
-        
-        glBegin(GL_QUADS)
-        
-        glNormal3f(0, 0, 1)
-        glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 1.0)
-        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 1.0)
-        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 1.0)
-        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 1.0)
-        
-        glNormal3f(0, 0, -1)
-        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 0)
-        glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 0)
-        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)
-        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 0)
-        
-        glNormal3f(0, 1, 0)
-        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)
-        glTexCoord2f(0.0, 0.0); glVertex3f(0, 1.0, 1.0)
-        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 1.0, 1.0)
-        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)
-        
-        glNormal3f(0, -1, 0)
-        glTexCoord2f(1.0, 1.0); glVertex3f(0, 0, 0)
-        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 0, 0)
-        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)
-        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)
-        
-        glNormal3f(1, 0, 0)
-        glTexCoord2f(1.0, 0.0); glVertex3f(1.0, 0, 0)
-        glTexCoord2f(1.0, 1.0); glVertex3f(1.0, 1.0, 0)
-        glTexCoord2f(0.0, 1.0); glVertex3f(1.0, 1.0, 1.0)
-        glTexCoord2f(0.0, 0.0); glVertex3f(1.0, 0, 1.0)
-        
-        glNormal3f(-1, 0, 0)
-        glTexCoord2f(0.0, 0.0); glVertex3f(0, 0, 0)
-        glTexCoord2f(1.0, 0.0); glVertex3f(0, 0, 1.0)
-        glTexCoord2f(1.0, 1.0); glVertex3f(0, 1.0, 1.0)
-        glTexCoord2f(0.0, 1.0); glVertex3f(0, 1.0, 0)
-        
-        glEnd()
-        
-        glPopMatrix()
+        glCallList(self.displayListId)
         

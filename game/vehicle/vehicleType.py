@@ -7,7 +7,6 @@ Created on Oct 17, 2014
 from abc import ABCMeta, abstractmethod
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-from reportlab.lib.pdfencrypt import padding
 from util.vector3d import Vec3
 from math import cos, sin, degrees, atan2, radians
 import config
@@ -17,6 +16,8 @@ class VehicleType:
     classdocs
     '''
     __metaclass__ = ABCMeta
+    
+    team = None
     
     speed = None
     rotateSpeed = None
@@ -34,11 +35,16 @@ class VehicleType:
     
     boundingBox = None
     
-    def __init__(self, params):
+    def __init__(self):
         '''
         Constructor
         '''
         pass
+    
+    def init (self, position, team):
+        
+        self.position = position
+        self.team = team
     
     @abstractmethod
     def update (self):
@@ -74,22 +80,22 @@ class VehicleType:
         
         if direction.x < 0:
             newX = self.position[0] + direction.x
-            if not config.game.level.isRoad(newX, self.position[1]) or not config.game.level.isRoad(newX, self.position[1] + self.boundingBox[1]):
+            if not config.game.level.isDriveable(newX, self.position[1]) or not config.game.level.isDriveable(newX, self.position[1] + self.boundingBox[1]):
                 direction.x = 0;
         
         if direction.x > 0:
             newX = self.position[0] + direction.x + self.boundingBox[0]
-            if not config.game.level.isRoad(newX, self.position[1]) or not config.game.level.isRoad(newX, self.position[1] + self.boundingBox[1]):
+            if not config.game.level.isDriveable(newX, self.position[1]) or not config.game.level.isDriveable(newX, self.position[1] + self.boundingBox[1]):
                 direction.x = 0;
         
         if direction.y < 0:
             newY = self.position[1] + direction.y
-            if not config.game.level.isRoad(self.position[0], newY) or not config.game.level.isRoad(self.position[0] + self.boundingBox[0], newY):
+            if not config.game.level.isDriveable(self.position[0], newY) or not config.game.level.isDriveable(self.position[0] + self.boundingBox[0], newY):
                 direction.y = 0;
         
         if direction.y > 0:
             newY = self.position[1] + direction.y + self.boundingBox[1]
-            if not config.game.level.isRoad(self.position[0], newY) or not config.game.level.isRoad(self.position[0] + self.boundingBox[0], newY):
+            if not config.game.level.isDriveable(self.position[0], newY) or not config.game.level.isDriveable(self.position[0] + self.boundingBox[0], newY):
                 direction.y = 0;
         
         self.position[0] = self.position[0] + direction.x
@@ -127,6 +133,9 @@ class VehicleType:
         turretAngle = self.turretDirection.getHorizontalAngle()
         aimAngle = self.aimDirection.getHorizontalAngle()
         
+        if turretAngle == aimAngle:
+            return
+        
         if aimAngle > turretAngle:
             difference = aimAngle - turretAngle
             if difference > 180:
@@ -136,11 +145,17 @@ class VehicleType:
             if difference < 180:
                 amount = -amount
         
-        if amount < 0 and amount + turretAngle > aimAngle:
-            turretAngle = aimAngle % 360
-        elif amount > 0 and amount + turretAngle < aimAngle:
-            turretAngle = aimAngle % 360
-            
+        turretAngle += amount
+        if turretAngle < 0:
+            turretAngle += 360
+        elif turretAngle > 360:
+            turretAngle % 360
+        
+        if amount < 0 and turretAngle < aimAngle:
+            turretAngle = aimAngle
+        elif amount > 0 and turretAngle > aimAngle:
+            turretAngle = aimAngle
+        
         self.turretDirection = Vec3(cos(radians(turretAngle)), sin(radians(turretAngle)), 0)
     
     def paintBoundingBox (self):

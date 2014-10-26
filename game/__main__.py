@@ -8,7 +8,8 @@ from OpenGL.GLU import *
 import config
 from core.game import Game
 import time
-from PIL.FontFile import WIDTH
+from core.gameConfig import GameConfig
+from core.team import Team
 
 mouseX = None
 mouseY = None
@@ -17,7 +18,20 @@ def initGame ():
     
     global lastFrameTime
     
-    config.game = Game()
+    team1 = Team()
+    team1.setColor((1.0, 0, 0))
+    team1.setBases([0,1])
+    
+    team2 = Team()
+    team2.setColor((0, 0, 1.0))
+    team2.setBases([3,4])
+    
+    gameConfig = GameConfig()
+    gameConfig.levelFile = "levels/default.txt"
+    gameConfig.teams = [team1, team2]
+    gameConfig.initialPlayers = 8
+    
+    config.game = Game(gameConfig)
     config.game.init()
     
     lastFrameTime = int(round(time.time() * 1000))

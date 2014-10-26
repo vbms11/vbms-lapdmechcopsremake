@@ -8,11 +8,13 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from random import choice
 from util.textureLoader import loadTexture
+from abc import ABCMeta
 
 class SceneTile:
     '''
     classdocs
     '''
+    __metaclass__ = ABCMeta
     
     def __init__(self, params):
         '''
@@ -20,7 +22,7 @@ class SceneTile:
         '''
         pass
     
-    def paintBox (self, posX, posY, sizeX, sizeY, sizeZ):
+    def paintBox (self, posX, posY, posZ, sizeX, sizeY, sizeZ):
         
         glBegin(GL_QUADS)
         
