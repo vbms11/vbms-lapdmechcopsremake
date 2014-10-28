@@ -9,6 +9,7 @@ from scene.buildingTile import BuildingTile
 from scene.roadTile import RoadTile
 from scene.baseTile import BaseTile
 from scene.pathmentTile import PathmentTile
+import config
 
 class Level():
     '''
@@ -69,6 +70,15 @@ class Level():
         
         return (x, y)
     
+    def getTile (self, x, y, outOfBounds = False):
+        
+        coordinates = self.getLevelGridCoordinate(x, y, outOfBounds)
+        
+        if coordinates == False:
+            return False
+        
+        return self.level[coordinates[1]][coordinates[0]]
+    
     def isRoad (self, x, y, outOfBounds = False):
         
         coordinates = self.getLevelGridCoordinate(x, y, outOfBounds)
@@ -115,3 +125,29 @@ class Level():
                 elif type == "-":
                     self.level[y][x] = PathmentTile(SceneTile, (x, y, 0))
         
+    def getUnitsOnTile (self, x, y, outOfBounds = False):
+        
+        coordinates = self.getLevelGridCoordinate(x, y, outOfBounds)
+        units = []
+        
+        for vehicle in config.game.vehicles:
+            onX = False
+            onY = False
+            # unit x+
+            if vehicle.position[0] > coordinates[0] and  vehicle.position[0] < coordinates[0] + 1:
+                onX = True
+            # unit y+
+            if vehicle.position[1] > coordinates[1] and  vehicle.position[1] < coordinates[1] + 1:
+                onY = True
+            #TODO
+            # unit x-
+            if not onX and vehicle.position[0] < coordinates[0] and  vehicle.position[0] + vehicle.boundingBox[0] > coordinates[0]:
+                onX = True
+            # unit y-
+            if not onY and vehicle.position[1] < coordinates[1] and  vehicle.position[1] + vehicle.boundingBox[1] > coordinates[1]:
+                onY = True
+            
+            if onX and onY:
+                units.append(vehicle)
+        
+        return units
