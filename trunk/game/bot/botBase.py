@@ -137,10 +137,13 @@ class BotBase:
     
     def getClosestUnit (self, units):
         
-        distance = {}
+        unitDistances = {}
+        
         for unit in units:
+            
             center = unit.getCenterOfBoundingBox()
             distance = Vec3(self.vehicle.position[0] - center[0], self.vehicle.position[1] - center[1], self.vehicle.position[2] - center[2]).length()
             
-            
-    
+            unitDistance[distance] = unit
+        
+        return unitDistances
