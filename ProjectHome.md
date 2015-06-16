@@ -1,0 +1,1 @@
+game inspired by an old game that I liked to play called robo cop lapd. I wanted to play the game again but the graphics are so bad so I decided to write my own version. I thought I would like to learn python so I decided to write it with that :)
